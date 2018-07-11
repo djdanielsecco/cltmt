@@ -135,6 +135,57 @@
 				stopOnConvergence: true,
 				scoreThreshold: 0.08
 			});
+		function setup() {
+     
+       
+   
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+       var previousCode = null;
+       var parity = 0;
+       var active = true;
+ var showPlay = false;
+        const facingMode = this.useBackCamera
+          ? { exact: "environment" }
+          : "user";
+        const handleSuccess = stream => {
+          canvas.srcObject = stream;
+          const playPromise = canvas.play();
+          playPromise.catch(() => (this.showPlay = true));
+          playPromise.then(run());
+        };
+        navigator.mediaDevices
+          .getUserMedia({ video: { facingMode } })
+          .then(handleSuccess)
+          .catch(() => {
+            navigator.mediaDevices
+              .getUserMedia({ video: true })
+              .then(handleSuccess);
+          });
+      }
+    }
+ function   run() {
+   
+          
+           // const playPromise = this.$refs.video.play();
+         // playPromise.catch(() => (this.showPlay = true));
+        window.requestAnimationFrame(this.tick);
+          
+         var playPromise = this.$refs.video.play();
+
+  if (playPromise !== undefined) {
+    playPromise.then(_ => {
+      // Automatic playback started!
+      // Show playing UI.
+    })
+    .catch(error => {
+      // Auto-play was prevented
+      // Show paused UI.
+    });
+  }
+           //this.showPlay = true;
+      
+    }
+			
 			ctrack.init();
 			stats = new Stats();
 			stats.domElement.style.position = 'absolute';
@@ -177,12 +228,13 @@
 						ploca = positions[32];
 						ploco = positions[33];
 
-							document.getElementById('mkm').style.top = ploc[1].toFixed(2) - 2 + "px";
 						if (p === 70) {
+							/*document.getElementById('mkm').style.top = ploc[1].toFixed(2) - 2 + "px";
 							document.getElementById('mkn').style.top = ploca[1].toFixed(2) - 2 + "px";
 							document.getElementById('mko').style.top = ploco[1].toFixed(2) - 4 + "px";
 							document.getElementById('mkm').style.left = ploc[0].toFixed(2) + 16 + "px";
 							document.getElementById('mkn').style.left = ploca[0].toFixed(2) - 2 + "px";
+							document.getElementById('mko').style.left = ploco[0].toFixed(2) - 2 + "px";*/
 
 							overlayCC.clearRect(0, 0, 700, 500);
 							cancelRequestAnimFrame(canselDraw);
