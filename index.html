@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<title>Face Tracker</title>
+	<meta charset="utf-8">
+	<style>
+		@import url(https://fonts.googleapis.com/css?family=Lato:300italic,700italic,300,700);
+		body {
+			font-family: 'Lato';
+			background-color: #f0f0f0;
+			margin: 0px auto;
+			max-width: 1150px;
+		}
+
+		#overlay {
+			position: absolute;
+			top: 0px;
+			left: 0px;
+		}
+
+		#container {
+			position: relative;
+			width: 700px;
+			height: 500px;
+			/*margin : 0px auto;*/
+		}
+
+		#content {
+			margin-top: 70px;
+			margin-left: 100px;
+			margin-right: 100px;
+			max-width: 950px;
+		}
+
+		#convergence {
+			display: inline;
+		}
+
+		h2 {
+			font-weight: 400;
+		}
+
+		.btn {
+			font-family: 'Lato';
+			font-size: 16px;
+		}
+
+		.hide {
+			display: none;
+		}
+
+		#mkm {
+			margin: 0;
+			position: absolute;
+			width: 4px;
+			height: 4px;
+			background-color: deeppink;
+			border-radius: 20px;
+			display: flex;
+			align-items: center;
+		}
+
+		#mkn {
+			margin: 0;
+			position: absolute;
+			width: 4px;
+			height: 4px;
+			background-color: orangered;
+			border-radius: 20px;
+
+		}
+
+		#mko {
+			margin: 0;
+			position: absolute;
+			width: 4px;
+			height: 4px;
+			background-color: darkorchid;
+			border-radius: 20px;
+
+		}
+	</style>
+
+</head>
+
+<body>
+	<script src="./js/libs/utils.js"></script>
+	<script src="./js/libs/dat.gui.min.js"></script>
+	<script src="./js/clmtrackr.js"></script>
+	<script src="./js/libs/Stats.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="./styles/imgareaselect-default.css" />
+	<script src="./js/libs/jquery.min.js"></script>
+	<script src="./js/libs/jquery.imgareaselect.pack.js"></script>
+
+	<div id="content">
+		<h2>Face tracking in images</h2>
+		<div id="container">
+			<canvas id="image" width="700" height="500"></canvas>
+			<canvas id="overlay" width="700" height="500"></canvas>
+			<div class="oi" id="mkm"></div>
+			<div class="oi" id="mkn"></div>
+			<div class="oi" id="mko"></div>
+		</div>
+		<br/>
+		<input type="button" class="btn" value="start" onclick="animateClean()" />
+		<input type="button" class="btn" value="manually select face" onclick="selectBox()" />
+		<input type="file" class="btn" id="files" name="files[]" />
+		<p id="convergence"></p>
+		<p id="positions"></p>
+
+		<div id="text">
+			<p>This is an example of precise face-tracking in an image using the javascript library <a href="https://github.com/auduno/clmtrackr"><em>clmtrackr</em></a>. To try it out, simply click start.</p>
+			<span id="loadimagetext"><p>To try it out with your own image, choose a file above by clicking "choose file". If the tracking has problems, try selecting the face in the image manually by clicking "manually select face", and click and hold to drag a square around the face in the image.</p></span>
+
+		</div>
+
+
+		<script>
+			var canvas = document.getElementById('image');
+			var cc = canvas.getContext('2d');
+			var overlay = document.getElementById('overlay');
+			var overlayCC = overlay.getContext('2d');
+			var ploc = [];
+			var ploca = [];
+			var ploco = [];
+			/*	var img = new Image();
+				img.onload = function() {
+					cc.drawImage(img, 0, 0, 700, 500);
+				};*/
+			//img.src = './media/franck_02159.jpg';
+			var ctrack = new clm.tracker({
+				searchWindow: 25,
+				stopOnConvergence: true,
+				scoreThreshold: 0.08
+			});
+			ctrack.init();
+			stats = new Stats();
+			stats.domElement.style.position = 'absolute';
+			stats.domElement.style.top = '0px';
+			//console.log(stats.domElement);
+			//document.getElementById('container').appendChild(stats.domElement);
+			var drawRequest;
+			var canselDraw;
+
+			function animateClean() {
+				document.getElementById('mkm').style.top = 0 + "px";
+				document.getElementById('mkn').style.top = 0 + "px";
+				document.getElementById('mko').style.top = 0 + "px";
+				document.getElementById('mkm').style.left = 0 + "px";
+				document.getElementById('mkn').style.left = 0 + "px";
+				document.getElementById('mko').style.left = 0 + "px";
+				ctrack.start(document.getElementById('image'));
+				drawLoop();
+				positionLoop();
+			}
+
+			function animate(box) {
+				ctrack.start(document.getElementById('image'), box);
+				drawLoop();
+			}
+
+			function positionLoop() {
+				canselDraw = requestAnimFrame(positionLoop);
+				var positions = ctrack.getCurrentPosition();
+
+				// do something with the positions ...
+				// print the positions
+				var positionString = "";
+
+				if (positions) {
+					for (var p = 0; p < 71; p++) {
+						positionString += "featurepoint " + p + " : [" + positions[p][0].toFixed(2) + "," + positions[p][1].toFixed(2) + "]<br/>";
+						//$('#mkm').attr({top:positions[33][1].toFixed(2) + 'px', left: positions[33][0].toFixed(2) + 'px'});
+						ploc = positions[27];
+						ploca = positions[32];
+						ploco = positions[33];
+
+						/*if (p === 70) {
+							document.getElementById('mkm').style.top = ploc[1].toFixed(2) - 2 + "px";
+							document.getElementById('mkn').style.top = ploca[1].toFixed(2) - 2 + "px";
+							document.getElementById('mko').style.top = ploco[1].toFixed(2) - 4 + "px";
+							document.getElementById('mkm').style.left = ploc[0].toFixed(2) + 16 + "px";
+							document.getElementById('mkn').style.left = ploca[0].toFixed(2) - 2 + "px";
+							document.getElementById('mko').style.left = ploco[0].toFixed(2) - 2 + "px";
+
+							overlayCC.clearRect(0, 0, 700, 500);
+							cancelRequestAnimFrame(canselDraw);
+							//ctrack.reset();
+						}*/
+					}
+					//document.getElementById('mkm').style.top = '"-'+ ploc[1].toFixed(2) + 'px' + '"';
+					//document.getElementById('mkm').style.left = '"-'+ ploc[0].toFixed(2) + 'px' + '"';
+					//console.log('"'+ positions[33][1].toFixed(2) + 'px' + '"');
+					document.getElementById('positions').innerHTML = positionString;
+					console.log(ploc[0].toFixed(2));
+				}
+				//cancelRequestAnimFrame(positionLoop);
+
+			}
+
+
+			function drawLoop() {
+				drawRequest = requestAnimFrame(drawLoop);
+				overlayCC.clearRect(0, 0, 700, 500);
+				if (ctrack.getCurrentPosition()) {
+					ctrack.draw(overlay);
+				}
+			}
+			// detect if tracker fails to find a face
+			document.addEventListener("clmtrackrNotFound", function(event) {
+				ctrack.stop();
+				console.log("Not Found.")
+			}, false);
+			// detect if tracker loses tracking of face
+			document.addEventListener("clmtrackrLost", function(event) {
+				ctrack.stop();
+				console.log("lost.")
+			}, false);
+			// detect if tracker has converged
+			document.addEventListener("clmtrackrConverged", function(event) {
+				document.getElementById('convergence').innerHTML = "CONVERGED";
+				document.getElementById('convergence').style.backgroundColor = "#FF0000";
+				// stop drawloop
+				cancelRequestAnimFrame(drawRequest);
+				
+				document.getElementById('mkm').style.top = ploc[1].toFixed(2) - 2 + "px";
+							document.getElementById('mkn').style.top = ploca[1].toFixed(2) - 2 + "px";
+							document.getElementById('mko').style.top = ploco[1].toFixed(2) - 4 + "px";
+							document.getElementById('mkm').style.left = ploc[0].toFixed(2) + 16 + "px";
+							document.getElementById('mkn').style.left = ploca[0].toFixed(2) - 2 + "px";
+							document.getElementById('mko').style.left = ploco[0].toFixed(2) - 2 + "px";
+
+							overlayCC.clearRect(0, 0, 700, 500);
+							cancelRequestAnimFrame(canselDraw);
+							//ctrack.reset();
+				
+				
+			}, false);
+			// update stats on iteration
+			/*	document.addEventListener("clmtrackrIteration", function(event) {
+					stats.update();
+				}, false);*/
+			// manual selection of faces (with jquery imgareaselect plugin)
+			function selectBox() {
+				overlayCC.clearRect(0, 0, 700, 500);
+				document.getElementById('convergence').innerHTML = "";
+				ctrack.reset();
+				$('#overlay').addClass('hide');
+				$('#image').imgAreaSelect({
+					handles: true,
+					onSelectEnd: function(img, selection) {
+						// create box
+						var box = [selection.x1, selection.y1, selection.width, selection.height];
+						// do fitting
+						animate(box);
+						$('#overlay').removeClass('hide');
+					},
+					autoHide: true
+				});
+			}
+			// function to start showing images
+			function loadImage() {
+				if (fileList.indexOf(fileIndex) < 0) {
+					var reader = new FileReader();
+					reader.onload = (function(theFile) {
+						return function(e) {
+							// check if positions already exist in storage
+							// Render thumbnail.
+							//var canvas = document.getElementById('image')
+							//var cc = canvas.getContext('2d');
+							var img = new Image();
+							img.onload = function() {
+								if (img.height > 500 || img.width > 700) {
+									var rel = img.height / img.width;
+									var neww = 700;
+									var newh = neww * rel;
+									if (newh > 500) {
+										newh = 500;
+										neww = newh / rel;
+									}
+									canvas.setAttribute('width', neww);
+									canvas.setAttribute('height', newh);
+									overlay.setAttribute('width', neww);
+									overlay.setAttribute('height', newh);
+									cc.drawImage(img, 0, 0, neww, newh);
+								} else {
+									canvas.setAttribute('width', img.width);
+									canvas.setAttribute('height', img.height);
+									overlay.setAttribute('width', img.width);
+									overlay.setAttribute('height', img.height);
+									cc.drawImage(img, 0, 0, img.width, img.height);
+								}
+							}
+							img.src = e.target.result;
+						};
+					})(fileList[fileIndex]);
+					reader.readAsDataURL(fileList[fileIndex]);
+					overlayCC.clearRect(0, 0, 700, 500);
+					document.getElementById('convergence').innerHTML = "";
+					ctrack.reset();
+				}
+			}
+			// set up file selector and variables to hold selections
+			var fileList, fileIndex;
+			if (window.File && window.FileReader && window.FileList) {
+				function handleFileSelect(evt) {
+					var files = evt.target.files;
+					fileList = [];
+					for (var i = 0; i < files.length; i++) {
+						if (!files[i].type.match('image.*')) {
+							continue;
+						}
+						fileList.push(files[i]);
+					}
+					if (files.length > 0) {
+						fileIndex = 0;
+					}
+					loadImage();
+				}
+				document.getElementById('files').addEventListener('change', handleFileSelect, false);
+			} else {
+				$('#files').addClass("hide");
+				$('#loadimagetext').addClass("hide");
+			}
+		</script>
+	</div>
+</body>
+
+</html>
