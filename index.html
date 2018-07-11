@@ -19,6 +19,17 @@
 			left: 0px;
 		}
 
+		#videoel {
+			-o-transform: scaleX(-1);
+			-webkit-transform: scaleX(-1);
+			transform: scaleX(-1);
+			-ms-filter: fliph;
+			/*IE*/
+			filter: fliph;
+			/*IE*/
+		}
+
+
 		#container {
 			position: relative;
 			width: 700px;
@@ -80,6 +91,13 @@
 			border-radius: 20px;
 
 		}
+
+		#glass {
+			
+			position: absolute;
+
+
+		}
 	</style>
 
 </head>
@@ -97,24 +115,23 @@
 	<div id="content">
 		<h2>Face tracking in images</h2>
 		<div id="container">
+
 			<canvas id="image" width="700" height="500"></canvas>
 			<canvas id="overlay" width="700" height="500"></canvas>
 			<div class="oi" id="mkm"></div>
 			<div class="oi" id="mkn"></div>
 			<div class="oi" id="mko"></div>
+			<image id="glass" src=""></image>
 		</div>
 		<br/>
+
 		<input type="button" class="btn" value="start" onclick="animateClean()" />
-		<input type="button" class="btn" value="manually select face" onclick="selectBox()" />
-		<input type="file" class="btn" id="files" name="files[]" accept="video/*;capture=camcorder"/>
+		<!--<input type="button" class="btn" value="manually select face" onclick="selectBox()" />-->
+		<input type="file" class="btn" id="files" name="files[]" accept="video/*;capture=camcorder" />
 		<p id="convergence"></p>
 		<p id="positions"></p>
 
-		<div id="text">
-			<p>This is an example of precise face-tracking in an image using the javascript library <a href="https://github.com/auduno/clmtrackr"><em>clmtrackr</em></a>. To try it out, simply click start.</p>
-			<span id="loadimagetext"><p>To try it out with your own image, choose a file above by clicking "choose file". If the tracking has problems, try selecting the face in the image manually by clicking "manually select face", and click and hold to drag a square around the face in the image.</p></span>
 
-		</div>
 
 
 		<script>
@@ -125,73 +142,18 @@
 			var ploc = [];
 			var ploca = [];
 			var ploco = [];
-			/*	var img = new Image();
-				img.onload = function() {
-					cc.drawImage(img, 0, 0, 700, 500);
-				};*/
-			//img.src = './media/franck_02159.jpg';
+			var plocv = [];
+			var plocw = [];
+
 			var ctrack = new clm.tracker({
 				searchWindow: 25,
 				stopOnConvergence: true,
 				scoreThreshold: 0.08
 			});
-		function setup() {
-     
-       
-   
-      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-       var previousCode = null;
-       var parity = 0;
-       var active = true;
- var showPlay = false;
-        const facingMode = this.useBackCamera
-          ? { exact: "environment" }
-          : "user";
-        const handleSuccess = stream => {
-          canvas.srcObject = stream;
-          const playPromise = canvas.play();
-          playPromise.catch(() => (this.showPlay = true));
-          playPromise.then(run());
-        };
-        navigator.mediaDevices
-          .getUserMedia({ video: { facingMode } })
-          .then(handleSuccess)
-          .catch(() => {
-            navigator.mediaDevices
-              .getUserMedia({ video: true })
-              .then(handleSuccess);
-          });
-      }
-    }
- function   run() {
-   
-          
-           // const playPromise = this.$refs.video.play();
-         // playPromise.catch(() => (this.showPlay = true));
-        window.requestAnimationFrame(this.tick);
-          
-         var playPromise = this.$refs.video.play();
 
-  if (playPromise !== undefined) {
-    playPromise.then(_ => {
-      // Automatic playback started!
-      // Show playing UI.
-    })
-    .catch(error => {
-      // Auto-play was prevented
-      // Show paused UI.
-    });
-  }
-           //this.showPlay = true;
-      
-    }
-			
+
 			ctrack.init();
-			stats = new Stats();
-			stats.domElement.style.position = 'absolute';
-			stats.domElement.style.top = '0px';
-			//console.log(stats.domElement);
-			//document.getElementById('container').appendChild(stats.domElement);
+
 			var drawRequest;
 			var canselDraw;
 
@@ -203,6 +165,7 @@
 				document.getElementById('mkn').style.left = 0 + "px";
 				document.getElementById('mko').style.left = 0 + "px";
 				ctrack.start(document.getElementById('image'));
+				//run();
 				drawLoop();
 				positionLoop();
 			}
@@ -227,17 +190,22 @@
 						ploc = positions[27];
 						ploca = positions[32];
 						ploco = positions[33];
+						plocv = positions[0];
+						plocw = positions[14];
 
 						if (p === 70) {
-							/*document.getElementById('mkm').style.top = ploc[1].toFixed(2) - 2 + "px";
+							document.getElementById('mkm').style.top = ploc[1].toFixed(2) - 2 + "px";
 							document.getElementById('mkn').style.top = ploca[1].toFixed(2) - 2 + "px";
 							document.getElementById('mko').style.top = ploco[1].toFixed(2) - 4 + "px";
 							document.getElementById('mkm').style.left = ploc[0].toFixed(2) + 16 + "px";
 							document.getElementById('mkn').style.left = ploca[0].toFixed(2) - 2 + "px";
-							document.getElementById('mko').style.left = ploco[0].toFixed(2) - 2 + "px";*/
-
-							overlayCC.clearRect(0, 0, 700, 500);
-							cancelRequestAnimFrame(canselDraw);
+							document.getElementById('mko').style.left = ploco[0].toFixed(2) - 2 + "px";
+							document.getElementById('glass').style.top = ploco[1].toFixed(2) - 80 + "px";
+							document.getElementById('glass').style.left = ploco[0].toFixed(2) -  ((plocw[0]-plocv[0])/2).toFixed(2) + "px";
+							document.getElementById('glass').setAttribute('width', (plocw[0]-plocv[0]).toFixed(2)+ "px"); //ploc[0].toFixed(2) - ploca[0].toFixed(2) + "px";
+							document.getElementById('glass').setAttribute('src', 'https://firebasestorage.googleapis.com/v0/b/glassesstoresapp.appspot.com/o/oculos%2F764ce45349a56e8c2a486a649e5631ae-escudo-gafas-de-sol-marco-negro-by-vexels.png?alt=media&token=26fb63b7-344c-4de9-823c-30342790e0d1');
+							//overlayCC.clearRect(0, 0, 700, 500);
+							//cancelRequestAnimFrame(canselDraw);
 							//ctrack.reset();
 						}
 					}
@@ -275,19 +243,19 @@
 				document.getElementById('convergence').style.backgroundColor = "#FF0000";
 				// stop drawloop
 				cancelRequestAnimFrame(drawRequest);
-				
-				document.getElementById('mkm').style.top = ploc[1].toFixed(2) - 2 + "px";
-							document.getElementById('mkn').style.top = ploca[1].toFixed(2) - 2 + "px";
-							document.getElementById('mko').style.top = ploco[1].toFixed(2) - 4 + "px";
-							document.getElementById('mkm').style.left = ploc[0].toFixed(2) + 16 + "px";
-							document.getElementById('mkn').style.left = ploca[0].toFixed(2) - 2 + "px";
-							document.getElementById('mko').style.left = ploco[0].toFixed(2) - 2 + "px";
 
-							overlayCC.clearRect(0, 0, 700, 500);
-							cancelRequestAnimFrame(canselDraw);
-							//ctrack.reset();
-				
-				
+				/*document.getElementById('mkm').style.top = ploc[1].toFixed(2) - 2 + "px";
+				document.getElementById('mkn').style.top = ploca[1].toFixed(2) - 2 + "px";
+				document.getElementById('mko').style.top = ploco[1].toFixed(2) - 4 + "px";
+				document.getElementById('mkm').style.left = ploc[0].toFixed(2) + 16 + "px";
+				document.getElementById('mkn').style.left = ploca[0].toFixed(2) - 2 + "px";
+				document.getElementById('mko').style.left = ploco[0].toFixed(2) - 2 + "px";*/
+
+				overlayCC.clearRect(0, 0, 700, 500);
+				cancelRequestAnimFrame(canselDraw);
+				//ctrack.reset();
+
+
 			}, false);
 			// update stats on iteration
 			/*	document.addEventListener("clmtrackrIteration", function(event) {
