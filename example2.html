@@ -264,7 +264,7 @@
 				// do something with the positions ...
 				// print the positions
 				var positionString = "";
-
+var higthGlass = document.getElementById('glass');
 				if (positions) {
 
 					//$('#mkm').attr({top:positions[33][1].toFixed(2) + 'px', left: positions[33][0].toFixed(2) + 'px'});
@@ -281,7 +281,7 @@
 					document.getElementById('mkm').style.left = ploc[0].toFixed(2) + 16 + "px";
 					document.getElementById('mkn').style.left = ploca[0].toFixed(2) - 2 + "px";
 					document.getElementById('mko').style.left = ploco[0].toFixed(2) - 2 + "px";*/
-					document.getElementById('glass').style.top = ploco[1].toFixed(2) - 80 + "px";
+					document.getElementById('glass').style.top = ploco[1].toFixed(2) - (higthGlass.height/2) + "px";
 					document.getElementById('glass').style.left = ploco[0].toFixed(2) - ((plocw[0] - plocv[0]) / 2).toFixed(2) + "px";
 					document.getElementById('glass').setAttribute('width', (plocw[0] - plocv[0]).toFixed(2) + "px"); //ploc[0].toFixed(2) - ploca[0].toFixed(2) + "px";
 					document.getElementById('glass').setAttribute('src', 'https://firebasestorage.googleapis.com/v0/b/glassesstoresapp.appspot.com/o/oculos%2F764ce45349a56e8c2a486a649e5631ae-escudo-gafas-de-sol-marco-negro-by-vexels.png?alt=media&token=26fb63b7-344c-4de9-823c-30342790e0d1');
@@ -298,7 +298,7 @@
 				}
 				//cancelRequestAnimFrame(positionLoop);
 				//console.log('  27  >' + ploc + '  32  >' +  ploca  + '  33  >' +  ploco  + '  0  >' +  plocv  + '  14  >' + plocw);
-				var higthGlass = document.getElementById('glass');
+			
 			
 				var xx2 = Math.atan(((ploca[1] - ploc[1]).toFixed(2)) / ((ploca[0] - ploc[0]).toFixed(2))) * (180 / Math.PI);
 
