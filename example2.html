@@ -56,6 +56,13 @@
 			.nohide {
 				display : block;
 			}
+			
+			#glass {
+
+			position: absolute;
+
+
+		}
 		</style>
 		<script>
 			// getUserMedia only works over https in Chrome 47+, so we redirect to https. Also notify user if running from file.
@@ -87,6 +94,7 @@
 				<video id="videoel" width="400" height="300" preload="auto" loop playsinline autoplay>
 				</video>
 				<canvas id="overlay" width="400" height="300"></canvas>
+				<image id="glass" src=""></image>
 			</div>
 			<br/>
 			<input class="btn" type="button" value="wait, loading video" disabled="disabled" onclick="startVideo()" id="startbutton"/>
@@ -114,6 +122,11 @@
 			</div>
 			<a href="https://github.com/auduno/clmtrackr"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_left_green_007200.png" alt="Fork me on GitHub"></a>
 			<script>
+				var ploc = [];
+			var ploca = [];
+			var ploco = [];
+			var plocv = [];
+			var plocw = [];
 				var vid = document.getElementById('videoel');
 				var vid_width = vid.width;
 				var vid_height = vid.height;
@@ -208,6 +221,58 @@
 						ctrack.draw(overlay);
 					}
 				}
+				function positionLoop() {
+				canselDraw = requestAnimFrame(positionLoop);
+				var positions = ctrack.getCurrentPosition();
+
+				// do something with the positions ...
+				// print the positions
+				var positionString = "";
+
+				if (positions) {
+					for (var p = 0; p < 71; p++) {
+						positionString += "featurepoint " + p + " : [" + positions[p][0].toFixed(2) + "," + positions[p][1].toFixed(2) + "]<br/>";
+						//$('#mkm').attr({top:positions[33][1].toFixed(2) + 'px', left: positions[33][0].toFixed(2) + 'px'});
+						ploc = positions[27];
+						ploca = positions[32];
+						ploco = positions[33];
+						plocv = positions[0];
+						plocw = positions[14];
+
+						if (p === 70) {
+							/*document.getElementById('mkm').style.top = ploc[1].toFixed(2) - 2 + "px";
+							document.getElementById('mkn').style.top = ploca[1].toFixed(2) - 2 + "px";
+							document.getElementById('mko').style.top = ploco[1].toFixed(2) - 4 + "px";
+							document.getElementById('mkm').style.left = ploc[0].toFixed(2) + 16 + "px";
+							document.getElementById('mkn').style.left = ploca[0].toFixed(2) - 2 + "px";
+							document.getElementById('mko').style.left = ploco[0].toFixed(2) - 2 + "px";*/
+							document.getElementById('glass').style.top = ploco[1].toFixed(2) - 80 + "px";
+							document.getElementById('glass').style.left = ploco[0].toFixed(2) - ((plocw[0] - plocv[0]) / 2).toFixed(2) + "px";
+							document.getElementById('glass').setAttribute('width', (plocw[0] - plocv[0]).toFixed(2) + "px"); //ploc[0].toFixed(2) - ploca[0].toFixed(2) + "px";
+							document.getElementById('glass').setAttribute('src', 'https://firebasestorage.googleapis.com/v0/b/glassesstoresapp.appspot.com/o/oculos%2Fmascara-de-oculos--em-png-queroimagem-ceic%CC%A7a-crispim.png?alt=media&token=d1611a0e-5e48-43f7-abfa-da953a258619');
+							//overlayCC.clearRect(0, 0, 700, 500);
+							//cancelRequestAnimFrame(canselDraw);
+							//ctrack.reset();
+						}
+					}
+					//document.getElementById('mkm').style.top = '"-'+ ploc[1].toFixed(2) + 'px' + '"';
+					//document.getElementById('mkm').style.left = '"-'+ ploc[0].toFixed(2) + 'px' + '"';
+					//console.log('"'+ positions[33][1].toFixed(2) + 'px' + '"');
+					//document.getElementById('positions').innerHTML = positionString;
+
+				}
+				//cancelRequestAnimFrame(positionLoop);
+ //console.log('  27  >' + ploc + '  32  >' +  ploca  + '  33  >' +  ploco  + '  0  >' +  plocv  + '  14  >' + plocw);
+				
+				
+			var xx2 =	Math.atan(((ploca[1] - ploc[1]).toFixed(2))/((ploca[0] - ploc[0]).toFixed(2))) * (180/ Math.PI);
+				
+				//console.log(".....>>>>", xx2.toFixed(2));
+				console.log("rotateX(" +xx2.toFixed(2)+"deg)");
+				//document.getElementById('glass').style.transform = "rotateZ(30deg)";
+				document.getElementById('glass').style.transform = "rotateZ(" + xx2.toFixed(2)+"deg)";
+			}
+
 				/*********** Code for stats **********/
 				stats = new Stats();
 				stats.domElement.style.position = 'absolute';
