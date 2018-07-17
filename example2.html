@@ -201,9 +201,9 @@
 				vid.addEventListener('canplay', enablestart, false);
 				/*********** Code for face tracking *********/
 				var ctrack = new clm.tracker({
-				searchWindow: 25,
+				searchWindow: 11,
 				stopOnConvergence: false,
-				scoreThreshold: 0.08
+				scoreThreshold: 0.5
 			});
 				ctrack.init();
 				var trackingStarted = false;
