@@ -33,12 +33,12 @@
 			<script>
 				var videoInput = document.getElementById('video');
 
-				//var ctracker = new clm.tracker();
-				var ctracker = new clm.tracker({
+				var ctracker = new clm.tracker();
+		/*		var ctracker = new clm.tracker({
 				searchWindow: 25,
 				stopOnConvergence: true,
 				scoreThreshold: 0.08
-			});
+			});*/
 				ctracker.init();
 				ctracker.start(videoInput);
 
