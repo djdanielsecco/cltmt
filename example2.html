@@ -200,7 +200,11 @@
 				}
 				vid.addEventListener('canplay', enablestart, false);
 				/*********** Code for face tracking *********/
-				var ctrack = new clm.tracker();
+				var ctrack = new clm.tracker({
+				searchWindow: 25,
+				stopOnConvergence: true,
+				scoreThreshold: 0.08
+			});
 				ctrack.init();
 				var trackingStarted = false;
 				function startVideo() {
@@ -231,8 +235,7 @@
 				var positionString = "";
 
 				if (positions) {
-					for (var p = 0; p < 71; p++) {
-						positionString += "featurepoint " + p + " : [" + positions[p][0].toFixed(2) + "," + positions[p][1].toFixed(2) + "]<br/>";
+					
 						//$('#mkm').attr({top:positions[33][1].toFixed(2) + 'px', left: positions[33][0].toFixed(2) + 'px'});
 						ploc = positions[27];
 						ploca = positions[32];
@@ -255,7 +258,7 @@
 							//cancelRequestAnimFrame(canselDraw);
 							//ctrack.reset();
 						
-					}
+					
 					//document.getElementById('mkm').style.top = '"-'+ ploc[1].toFixed(2) + 'px' + '"';
 					//document.getElementById('mkm').style.left = '"-'+ ploc[0].toFixed(2) + 'px' + '"';
 					//console.log('"'+ positions[33][1].toFixed(2) + 'px' + '"');
