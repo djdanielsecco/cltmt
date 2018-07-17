@@ -228,11 +228,12 @@
 			}
 			vid.addEventListener('canplay', enablestart, false);
 			/*********** Code for face tracking *********/
-			var ctrack = new clm.tracker({
+		/*	var ctrack = new clm.tracker({
 				searchWindow: 5,
 				stopOnConvergence: false,
 				scoreThreshold: 0.06
-			});
+			});*/
+			var ctrack = new clm.tracker();
 			ctrack.init();
 			var trackingStarted = false;
 
