@@ -93,11 +93,12 @@
 		}
 
 		#glass {
-			
+
 			position: absolute;
 
 
 		}
+
 	</style>
 
 </head>
@@ -201,9 +202,9 @@
 							document.getElementById('mkn').style.left = ploca[0].toFixed(2) - 2 + "px";
 							document.getElementById('mko').style.left = ploco[0].toFixed(2) - 2 + "px";
 							document.getElementById('glass').style.top = ploco[1].toFixed(2) - 80 + "px";
-							document.getElementById('glass').style.left = ploco[0].toFixed(2) -  ((plocw[0]-plocv[0])/2).toFixed(2) + "px";
-							document.getElementById('glass').setAttribute('width', (plocw[0]-plocv[0]).toFixed(2)+ "px"); //ploc[0].toFixed(2) - ploca[0].toFixed(2) + "px";
-							document.getElementById('glass').setAttribute('src', 'https://firebasestorage.googleapis.com/v0/b/glassesstoresapp.appspot.com/o/oculos%2F764ce45349a56e8c2a486a649e5631ae-escudo-gafas-de-sol-marco-negro-by-vexels.png?alt=media&token=26fb63b7-344c-4de9-823c-30342790e0d1');
+							document.getElementById('glass').style.left = ploco[0].toFixed(2) - ((plocw[0] - plocv[0]) / 2).toFixed(2) + "px";
+							document.getElementById('glass').setAttribute('width', (plocw[0] - plocv[0]).toFixed(2) + "px"); //ploc[0].toFixed(2) - ploca[0].toFixed(2) + "px";
+							document.getElementById('glass').setAttribute('src', 'https://firebasestorage.googleapis.com/v0/b/glassesstoresapp.appspot.com/o/oculos%2Fmascara-de-oculos--em-png-queroimagem-ceic%CC%A7a-crispim.png?alt=media&token=d1611a0e-5e48-43f7-abfa-da953a258619');
 							//overlayCC.clearRect(0, 0, 700, 500);
 							//cancelRequestAnimFrame(canselDraw);
 							//ctrack.reset();
@@ -213,10 +214,18 @@
 					//document.getElementById('mkm').style.left = '"-'+ ploc[0].toFixed(2) + 'px' + '"';
 					//console.log('"'+ positions[33][1].toFixed(2) + 'px' + '"');
 					document.getElementById('positions').innerHTML = positionString;
-					console.log(ploc[0].toFixed(2));
+
 				}
 				//cancelRequestAnimFrame(positionLoop);
-
+ //console.log('  27  >' + ploc + '  32  >' +  ploca  + '  33  >' +  ploco  + '  0  >' +  plocv  + '  14  >' + plocw);
+				
+				
+			var xx2 =	Math.atan(((ploca[1] - ploc[1]).toFixed(2))/((ploca[0] - ploc[0]).toFixed(2))) * (180/ Math.PI);
+				
+				//console.log(".....>>>>", xx2.toFixed(2));
+				console.log("rotateX(" +xx2.toFixed(2)+"deg)");
+				//document.getElementById('glass').style.transform = "rotateZ(30deg)";
+				document.getElementById('glass').style.transform = "rotateZ(" + xx2.toFixed(2)+"deg)";
 			}
 
 
@@ -343,6 +352,7 @@
 				$('#files').addClass("hide");
 				$('#loadimagetext').addClass("hide");
 			}
+
 		</script>
 	</div>
 </body>
