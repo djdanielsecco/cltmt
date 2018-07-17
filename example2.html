@@ -211,6 +211,7 @@
 					ctrack.start(vid);
 					trackingStarted = true;
 					// start loop to draw face
+						positionLoop();
 					drawLoop();
 				}
 				function drawLoop() {
@@ -282,6 +283,26 @@
 				document.addEventListener('clmtrackrIteration', function(event) {
 					stats.update();
 				}, false);
+				
+					document.addEventListener("clmtrackrConverged", function(event) {
+				//document.getElementById('convergence').innerHTML = "CONVERGED";
+				//document.getElementById('convergence').style.backgroundColor = "#FF0000";
+				// stop drawloop
+				//cancelRequestAnimFrame(drawRequest);
+
+				/*document.getElementById('mkm').style.top = ploc[1].toFixed(2) - 2 + "px";
+				document.getElementById('mkn').style.top = ploca[1].toFixed(2) - 2 + "px";
+				document.getElementById('mko').style.top = ploco[1].toFixed(2) - 4 + "px";
+				document.getElementById('mkm').style.left = ploc[0].toFixed(2) + 16 + "px";
+				document.getElementById('mkn').style.left = ploca[0].toFixed(2) - 2 + "px";
+				document.getElementById('mko').style.left = ploco[0].toFixed(2) - 2 + "px";*/
+
+				overlayCC.clearRect(0, 0, 700, 500);
+				cancelRequestAnimFrame(canselDraw);
+				//ctrack.reset();
+
+
+			}, false);
 			</script>
 		</div>
 	</body>
