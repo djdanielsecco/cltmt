@@ -115,7 +115,7 @@
 			<video id="videoel" width="600" height="800" preload="auto" loop playsinline autoplay>
 				</video>
 			<canvas id="overlay" width="600" height="800"></canvas>
-			<img id="glass" src=""></img>
+			<img id="glass" src=""/>
 		</div>
 		<br/>
 		<input class="btn" type="button" value="wait, loading video" disabled="disabled" onclick="startVideo()" id="startbutton" />
@@ -299,7 +299,7 @@
 				//cancelRequestAnimFrame(positionLoop);
 				//console.log('  27  >' + ploc + '  32  >' +  ploca  + '  33  >' +  ploco  + '  0  >' +  plocv  + '  14  >' + plocw);
 				var higthGlass = document.getElementById('glass');
-				var img = new Image();
+				var img = document.createElement('img');
 			/*	img.onload = function() {
 					cc.drawImage(img, 0, 0, vid_width, vid_height);
 				};*/
